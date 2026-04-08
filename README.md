@@ -1,10 +1,21 @@
+---
+title: LegalMind RL
+emoji: ⚖️
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_file: app.py
+pinned: false
+---
+
+
 # LegalMind-RL
 
 **A courtroom simulation environment for RL agents** — implements the OpenEnv spec with `reset()`, `step()`, and `state()`.
 
 > 🏛️ You are NOT building the lawyer AI. You are building the **courtroom** — a structured environment where any AI agent can argue, question witnesses, present evidence, and be evaluated with continuous reward feedback.
 
----
+
 
 ## Overview
 
@@ -20,7 +31,7 @@ Legal argumentation requires:
 
 This maps naturally onto RL: states are rich, the action space is structured, and rewards can be shaped step-by-step.
 
----
+
 
 ## Environment Design
 
@@ -112,7 +123,6 @@ An episode ends when:
 - **Max rounds**: 16
 - **Baseline score**: ~0.30
 
----
 
 ## Graders
 
@@ -140,7 +150,7 @@ score = 0.25 × (key_evidence_used / 4)
       + 0.15 × (all_3_contradictions_bonus)
 ```
 
----
+
 
 ## Setup
 
@@ -175,7 +185,7 @@ Deploy to a Spaces instance with Docker runtime. Set secrets:
 - `API_BASE_URL` — your LLM endpoint
 - `MODEL_NAME` — model name
 
----
+
 
 ## Running Inference
 
@@ -199,7 +209,6 @@ python inference.py
 [END] success=true steps=10 score=0.52 rewards=0.15,0.20,0.10,...
 ```
 
----
 
 ## API Reference
 
@@ -213,7 +222,7 @@ python inference.py
 | POST | `/close/{session_id}` | End session |
 | GET | `/tasks` | List all available tasks |
 
----
+
 
 ## Project Structure
 
@@ -238,7 +247,7 @@ legalmind-rl/
 └── README.md
 ```
 
----
+
 
 ## Baseline Scores
 
@@ -250,7 +259,6 @@ legalmind-rl/
 
 Scores above 0.75 require deliberate contradiction identification and full evidence coverage.
 
----
 
 ## License
 
