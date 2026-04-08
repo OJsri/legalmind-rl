@@ -1,0 +1,21 @@
+Metadata-Version: 2.4
+Name: legalmind-rl
+Version: 1.0.0
+Summary: Courtroom simulation RL environment — OpenEnv compatible
+Author: LegalMind-RL
+License: MIT
+Keywords: reinforcement-learning,legal-reasoning,openenv,simulation
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: uvicorn[standard]>=0.30.6
+Requires-Dist: pydantic>=2.8.2
+Requires-Dist: httpx>=0.27.2
+Requires-Dist: openai>=1.45.0
+Requires-Dist: websockets>=12.0
+Requires-Dist: PyYAML>=6.0.2
+Provides-Extra: openenv
+Requires-Dist: openenv-core>=0.2.1; extra == "openenv"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"

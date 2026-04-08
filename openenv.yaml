@@ -1,0 +1,100 @@
+name: legalmind-rl
+version: "1.0.0"
+description: >
+  Courtroom simulation environment for RL agents. Agents argue, question
+  witnesses, present evidence, and object — learning legal reasoning through
+  dense continuous rewards across three tasks of increasing difficulty.
+
+environment:
+  type: text
+  interface: http
+  app_object: "server.app:app"
+  base_url: "http://localhost:7860"
+
+action:
+  class: LegalAction
+  fields:
+    action:  {type: string, enum: [argue, question, present_evidence, object]}
+    target:  {type: string, nullable: true}
+    content: {type: string}
+
+observation:
+  class: LegalObservation
+  fields:
+    case_summary:          {type: string}
+    current_phase:         {type: string, enum: [opening, examination, cross_examination, closing, verdict]}
+    round_number:          {type: integer}
+    max_rounds:            {type: integer}
+    available_evidence:    {type: array}
+    witnesses:             {type: array}
+    conversation_history:  {type: array}
+    opponent_last_action:  {type: string, nullable: true}
+    valid_actions:         {type: array}
+    score_so_far:          {type: number}
+    agent_role:            {type: string}
+    done:                  {type: boolean}
+    reward:                {type: number}
+
+state:
+  class: LegalState
+
+reward:
+  type: continuous
+  range: [-0.5, 0.5]
+  shaped: true
+  description: >
+    Dense per-step reward. +0.20 new evidence used, +0.20 contradiction
+    identified, +0.10 strong argument, +0.05 phase-correct action.
+    -0.15 invalid phase action, -0.10 repetition, -0.05 weak language.
+
+tasks:
+  - id: task_shoplifting_v1
+    name: "The Riverside Market Theft"
+    difficulty: easy
+    max_rounds: 8
+    description: "Simple theft case with clear camera evidence and reliable eyewitness."
+    grader:
+      type: deterministic
+      score_range: [0.0, 1.0]
+      weights: {key_evidence: 0.40, reward: 0.30, completion: 0.30}
+
+  - id: task_fraud_v1
+    name: "The Harmon Capital Fraud"
+    difficulty: medium
+    max_rounds: 12
+    description: "Financial fraud with shell company and two witness contradictions."
+    grader:
+      type: deterministic
+      score_range: [0.0, 1.0]
+      weights: {key_evidence: 0.30, contradictions: 0.35, reward: 0.35}
+
+  - id: task_homicide_v1
+    name: "The Vantage Hotel Homicide"
+    difficulty: hard
+    max_rounds: 16
+    description: "Complex murder trial — 8 evidence items, 3 witness contradictions, disputed alibi."
+    grader:
+      type: deterministic
+      score_range: [0.0, 1.0]
+      weights: {key_evidence: 0.25, contradictions: 0.40, reward: 0.20, all_contra_bonus: 0.15}
+
+endpoints:
+  - {method: POST, path: /reset,             description: Start new episode}
+  - {method: POST, path: /step,              description: Submit action and receive observation + reward}
+  - {method: GET,  path: /state/{session_id},description: Current state snapshot}
+  - {method: POST, path: /score,             description: Graded final score 0-1}
+  - {method: POST, path: /close/{session_id},description: End session}
+  - {method: WS,   path: /ws,               description: WebSocket persistent session}
+
+environment_variables:
+  - {name: API_BASE_URL,      default: "https://router.huggingface.co/v1", description: LLM API endpoint}
+  - {name: MODEL_NAME,        default: "Qwen/Qwen2.5-72B-Instruct",         description: LLM model identifier}
+  - {name: HF_TOKEN,          required: true,                               description: Hugging Face API key}
+  - {name: LOCAL_IMAGE_NAME,  required: false,                              description: Local Docker image for from_docker_image()}
+  - {name: PORT,              default: "7860",                              description: Server port}
+
+runtime:
+  max_inference_minutes: 20
+  cpu: 2
+  memory_gb: 8
+  dockerfile: server/Dockerfile
