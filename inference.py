@@ -39,9 +39,9 @@ from openai import OpenAI
 
 # ── Required env vars (hackathon checklist item) ─────────────────────────
 LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")        # optional Docker image
-API_KEY          = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
-
+HF_TOKEN = os.getenv("HF_TOKEN")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 MODEL_NAME   = os.getenv("MODEL_NAME",   "Qwen/Qwen2.5-72B-Instruct")
 TASK_NAME    = os.getenv("TASK",         "easy")          # easy | medium | hard
 ROLE         = os.getenv("ROLE",         "prosecution")
@@ -51,7 +51,7 @@ MAX_STEPS    = 20
 SUCCESS_SCORE_THRESHOLD = 0.5
 
 # ── LLM client (all LLM calls use OpenAI client — hackathon requirement) ─
-client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY or "sk-placeholder")
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
 SYSTEM_PROMPT = textwrap.dedent("""
     You are an expert courtroom litigator participating in a legal simulation.
@@ -106,7 +106,7 @@ def get_model_action(obs_prompt: str) -> dict:
                 raw = raw[4:]
         return json.loads(raw.strip())
     except Exception as exc:
-        print(f"[DEBUG] LLM call failed: {exc}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] LLM call failed: {exc}", flush=True)
         return {"action": "argue", "target": None, "content": "The evidence directly establishes the facts of this case."}
 
 
@@ -199,7 +199,7 @@ async def main() -> None:
             success = score >= SUCCESS_SCORE_THRESHOLD
 
     except Exception as exc:
-        print(f"[DEBUG] Exception: {exc}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] Exception: {exc}", flush=True)
 
     finally:
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
