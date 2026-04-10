@@ -106,7 +106,7 @@ def get_model_action(obs_prompt: str) -> dict:
                 raw = raw[4:]
         return json.loads(raw.strip())
     except Exception as exc:
-        print(f"[DEBUG] LLM call failed: {exc}", flush=True)
+        print(f"[DEBUG] LLM call failed: {exc}", flush=True, file=sys.stderr)
         return {"action": "argue", "target": None, "content": "The evidence directly establishes the facts of this case."}
 
 
@@ -199,7 +199,7 @@ async def main() -> None:
             success = score >= SUCCESS_SCORE_THRESHOLD
 
     except Exception as exc:
-        print(f"[DEBUG] Exception: {exc}", flush=True)
+        print(f"[DEBUG] Exception: {exc}", flush=True, file=sys.stderr)
 
     finally:
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
