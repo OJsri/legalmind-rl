@@ -81,7 +81,7 @@ def create_app() -> FastAPI:
     # ── HTTP endpoints (stateless / debugging) ─────────────────────────
 
     @app.post("/reset")
-    def reset(req: Optional[ResetRequest]):
+    def reset(req: Optional[ResetRequest] = None):
         if req is None:
             req = ResetRequest()
             
