@@ -81,7 +81,10 @@ def create_app() -> FastAPI:
     # ── HTTP endpoints (stateless / debugging) ─────────────────────────
 
     @app.post("/reset")
-    def reset(req: ResetRequest):
+    def reset(req: Optional[ResetRequest]):
+        if req is None:
+            req = ResetRequest()
+            
         try:
             case = get_task(req.task)
         except ValueError as e:
