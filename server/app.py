@@ -115,8 +115,16 @@ def create_app() -> FastAPI:
         return env.state.to_dict()
 
     @app.post("/score")
-    def score(req: ScoreRequest):
-        env = _sessions.get(req.session_id)
+    def score(req: Optional[ScoreRequest] = None):
+        if req is None or req.session_id is None:
+            # fallback: pick any active session
+            if not _sessions:
+                raise HTTPException(400, "No active sessions")
+            session_id = list(_sessions.keys())[0]
+        else:
+            session_id = req.session_id
+
+        env = _sessions.get(session_id)
         if not env:
             raise HTTPException(404, f"Session '{req.session_id}' not found.")
         grader = get_grader(env.case.id)
