@@ -1,3 +1,4 @@
+README.md
 pyproject.toml
 legalmind_rl.egg-info/PKG-INFO
 legalmind_rl.egg-info/SOURCES.txt
