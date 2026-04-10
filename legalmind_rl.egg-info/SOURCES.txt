@@ -3,6 +3,7 @@ pyproject.toml
 legalmind_rl.egg-info/PKG-INFO
 legalmind_rl.egg-info/SOURCES.txt
 legalmind_rl.egg-info/dependency_links.txt
+legalmind_rl.egg-info/entry_points.txt
 legalmind_rl.egg-info/requires.txt
 legalmind_rl.egg-info/top_level.txt
 server/__init__.py

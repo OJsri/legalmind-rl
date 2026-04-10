@@ -9,6 +9,7 @@ import json
 import os
 import sys
 import uuid
+import uvicorn
 from typing import Any, Dict, Optional
 
 # Dual-import pattern
@@ -207,7 +208,11 @@ def create_app() -> FastAPI:
 
 app = create_app()
 
-if __name__ == "__main__":
-    import uvicorn
+
+def main():
     port = int(os.getenv("PORT", 7860))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
+
+if __name__ == "__main__":
+    main()

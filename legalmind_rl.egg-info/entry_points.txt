@@ -1,0 +1,2 @@
+[console_scripts]
+legalmind-server = server.app:main
