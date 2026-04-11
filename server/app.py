@@ -46,6 +46,12 @@ class StepRequest(BaseModel):
 class ScoreRequest(BaseModel):
     session_id: str = "default"
 
+class GradeRequest(BaseModel):
+    session_id: str = "default"
+
+class GradeResponse(BaseModel):
+    score: float
+
 
 # ── App factory ───────────────────────────────────────────────────────────
 
@@ -113,6 +119,13 @@ def create_app() -> FastAPI:
         if not env:
             raise HTTPException(404, f"Session '{session_id}' not found.")
         return env.state.to_dict()
+
+    @app.get("/grade", response_model=GradeResponse)
+    async def grade(req: GradeRequest):
+        env = _sessions.get(req.session_id)
+        grader = get_grader(env.case.id)
+        s = grader(env.state.to_dict())
+        return GradeResponse(s)
 
     @app.post("/score")
     def score(req: Optional[ScoreRequest] = None):

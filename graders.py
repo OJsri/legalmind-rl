@@ -1,6 +1,6 @@
 """Deterministic graders — score in [0.0, 1.0] per task."""
 from __future__ import annotations
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 def grade_easy(state: Dict[str, Any]) -> float:
     used = set(state.get("used_evidence", []))
@@ -38,3 +38,8 @@ def get_grader(task_name: str):
     if task_name not in GRADERS:
         raise ValueError(f"No grader for '{task_name}'. Available: {list(GRADERS.keys())}")
     return GRADERS[task_name]
+
+
+def list_tasks() -> List[str]:
+    """Return list of available task names."""
+    return list(GRADERS.keys())
